@@ -2,28 +2,28 @@
 
 ==Parser and Lexer rules visualizations==
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/parser-request.png
+http://petroltracker.googlecode.com/files/parser-request.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/parser-query.png
+http://petroltracker.googlecode.com/files/parser-query.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/parser-update.png
+http://petroltracker.googlecode.com/files/parser-update.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/parser-location.png
+http://petroltracker.googlecode.com/files/parser-location.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/parser-fueltype.png
+http://petroltracker.googlecode.com/files/parser-fueltype.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/parser-petrolstation.png
+http://petroltracker.googlecode.com/files/parser-petrolstation.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/parser-price.png
+http://petroltracker.googlecode.com/files/parser-price.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/lexer-number.png
+http://petroltracker.googlecode.com/files/lexer-number.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/lexer_fragment-float.png
+http://petroltracker.googlecode.com/files/lexer_fragment-float.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/lexer_fragment-integer.png
+http://petroltracker.googlecode.com/files/lexer_fragment-integer.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/lexer-ident.png
+http://petroltracker.googlecode.com/files/lexer-ident.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/lexer-delimiter.png
+http://petroltracker.googlecode.com/files/lexer-delimiter.png
 
-https://code.google.com/p/petroltracker/source/browse/petroltracker-language/syntax-tree-images/lexer-whitespace.png
+http://petroltracker.googlecode.com/files/lexer-whitespace.png
