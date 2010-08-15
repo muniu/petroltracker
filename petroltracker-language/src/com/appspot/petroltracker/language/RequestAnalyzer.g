@@ -14,7 +14,8 @@ options {
 
 
 request
-	: query | update
+	: query {System.out.println("query, " + $query.text);}
+	| update {System.out.println("update, " + $update.text);}
 	;
 
 

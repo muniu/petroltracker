@@ -10,11 +10,12 @@ public class TestRequestAnaylzer {
 
 	public static void main(String[] args) throws RecognitionException {
 		CharStream charStream =  new ANTLRStringStream("Westlands,Oil Libya,petrol,99.2");
+//		CharStream charStream =  new ANTLRStringStream("Westlands, diesel");
 		RequestAnalyzerLexer lexer = new RequestAnalyzerLexer(charStream);
 		TokenStream tokenStream = new CommonTokenStream(lexer);
 		RequestAnalyzerParser parser = new RequestAnalyzerParser(tokenStream);
 		parser.request();
-		System.out.println("ok!");
+//		System.out.println("ok!");
 	}
 
 }
