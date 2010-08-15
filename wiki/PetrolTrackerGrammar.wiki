@@ -8,7 +8,7 @@ A few suggestions on formats, and some basic syntax-trees generated through ANTL
  * *'Koinange Street, petrol'*
  (location, fuel type) : full query syntax
 
-http://petroltracker.googlecode.com/files/update-request-syntax-tree.1.png
+http://petroltracker.googlecode.com/files/query-request-syntax-tree.1.png
 
 
  * *'Muthaiga'*
