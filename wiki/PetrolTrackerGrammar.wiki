@@ -1,8 +1,14 @@
-#summary Exploring issues around the grammar and syntax of the language to be used for querying and updating prices and locations within the system.
+#summary Exploring the grammar and syntax of the query/update language.
 #labels Featured,Phase-Design
 
 
 A few suggestions on formats, and some basic syntax-trees generated through ANTLR.
+
+The actual ANTLR grammar file:
+  * https://code.google.com/p/petroltracker/source/browse/petroltracker-language/src/com/appspot/petroltracker/language/RequestAnalyzer.g
+
+
+===Syntax===
 
 
  * *'Koinange Street, petrol'*
