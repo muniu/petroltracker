@@ -1,0 +1,29 @@
+#summary Exploring issues around the grammar and syntax of the language to be used for querying and updating prices and locations within the system.
+#labels Featured,Phase-Design
+
+
+A few suggestions on formats, and some basic syntax-trees generated through ANTLR.
+
+
+ * *'Koinange Street, petrol'*
+ (location, fuel type) : full query syntax
+
+http://petroltracker.googlecode.com/files/update-request-syntax-tree.1.png
+
+
+ * *'Muthaiga'*
+ (location only) : brief query syntax . Fuel type defaults to petrol.
+
+http://petroltracker.googlecode.com/files/query-request-syntax-tree.2.png
+
+
+ * *'Westlands, Kobil, diesel, 99.2'*
+ (location, station name, fuel type, price) : full update syntax
+
+http://petroltracker.googlecode.com/files/update-request-syntax-tree.1.png
+
+
+ * *'Lavington, Kobil, 99.3'*
+ (location, station name, price): brief update syntax. Fuel type defaults to petrol.
+
+http://petroltracker.googlecode.com/files/update-request-syntax-tree.2.png
