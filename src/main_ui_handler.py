@@ -22,6 +22,8 @@ __author__ = "saidimu@gmail.com (Saidimu Apale)"
 The main handler for UI-related AppEngine requests
 """
 
+import logging
+import urllib
 import petroltracker
 
 import wsgiref.handlers
@@ -35,6 +37,7 @@ class HandleRequests(webapp.RequestHandler):
     def __init__(self):
         '''
         '''
+        webapp.RequestHandler.__init__(self)
         self.petroltracker = petroltracker.PetrolTracker()
     ##__init__()
     
@@ -52,6 +55,7 @@ class HandleRequests(webapp.RequestHandler):
 
         ## geocode the location name given        
         geoinfo = self.petroltracker.geocode(place)
+        logging.debug("Return value from google_geocoder.geocode() 'geoinfo' = '%s'" % str(geoinfo))
         
         ## if too many results returned...
         if geoinfo == petroltracker.TOO_MANY_RESULTS:
@@ -62,23 +66,35 @@ class HandleRequests(webapp.RequestHandler):
         elif geoinfo == petroltracker.NO_RESULTS:
             self.response.out.write(geoinfo + "\n")
             return
+        ##if-else
         
         ## If all seems ok...
         place, (lat, lon) = geoinfo
-        ##if-else
 
         ## perform a proximity search on the geocoded location
         stations = self.petroltracker.proximity_search(lat, lon)
+        logging.debug("Return value from PetrolStation.proximity_fetch() 'stations' = '%s'" % str(stations))
         
-        if type(stations) == list:
+#        if type(stations) == list:        ## TODO: seems reduntant, can there ever be a different return type?
+        if len(stations) > 0:
             for station in stations:
-                place = station.canonical_name.split(",", 1)[0]
-                nearby = station.canonical_name.split(",", 1)[1]
+                logging.debug("Station close to place:'%s' --> station:'%s'" % (place, station.canonical_name))
+                station_name = station.canonical_name
                 
-                self.response.out.write("%s (near %s) *** (lat, lon) = (%s, %s)\n" % (place, nearby, station.location.lat, station.location.lon))
+                params = {
+                    'q': "%s,%s (petrol station closest to %s)" % (lat, lon, place),
+                    }
+                
+                google_maps_link = "http://maps.google.com/maps?" + urllib.urlencode(params)
+
+#                self.response.out.write("%s (lat, lon = %s, %s) is the closest petrol station to '%s'\n\n<p />" % (station_name, station.location.lat, station.location.lon, place))
+                self.response.out.write("<br /><br /><a href='%s'>%s</a> is the closest petrol station to '%s'\n\n<p />" % (google_maps_link, station_name, place))
+#                self.response.out.write("<a href='%s'>Map this location</a>" % google_maps_link)
                 return
             ##for
-        ##if
+        else:
+            self.response.out.write("No petrol stations found near %s\n" % place)
+        ##if-else
         
     ##get()
     

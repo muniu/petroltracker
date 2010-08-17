@@ -1,9 +1,13 @@
 from urllib import urlencode
 from urllib2 import urlopen
+
 try:
     import json as simplejson
 except ImportError:
-    import simplejson
+    try:
+        import simplejson
+    except ImportError:
+        from django.utils import simplejson
 
 import xml
 from xml.parsers.expat import ExpatError

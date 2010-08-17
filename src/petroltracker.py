@@ -18,8 +18,9 @@
 __author__ = "saidimu@gmail.com (Saidimu Apale)"
 
 
-import sys
+#import sys
 #sys.path.insert(0, 'geopy.zip')
+import logging
 from geopy import geocoders
 from geo import geotypes
 
@@ -27,7 +28,7 @@ from models import PetrolStation
 
 
 MAX_RESULTS = 1         ## the max. number of results to return
-MAX_DISTANCE = 5        ## in km, the max. distance that a location-result can be in
+MAX_DISTANCE = 15        ## in km, the max. distance that a location-result can be in
 
 
 TOO_MANY_RESULTS = "More than 1 place was found to match the name you entered. Please provide additional details."
@@ -40,12 +41,8 @@ class PetrolTracker():
     
     def __init__(self):
         '''
-        '''
-        ## this is a hack-ish way of rebuilding the dev datastore on startup... not needed on production   
-#        import bulkload_petrol_stations
-        
-        self.google_geocoder = geocoders.Google(domain='maps.google.co.ke', resource='maps', format_string="%s, Nairobi Kenya") 
-        
+        '''        
+        self.google_geocoder = geocoders.Google(domain='maps.google.co.ke', resource='maps', format_string="%s, Nairobi Kenya")         
     ##__init__()
 
     
