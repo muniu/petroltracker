@@ -16,7 +16,7 @@
 #
 
 application: petroltracker
-version: 1-6
+version: 1-test-petrol-discuss
 runtime: python
 api_version: 1
 
@@ -38,15 +38,19 @@ handlers:
   script: $PYTHON_LIB/google/appengine/ext/remote_api/handler.py
   login: admin
 
-- url: /stats.*
-  script: $PYTHON_LIB/google/appengine/ext/appstats/ui.py
-
 - url: /static
   static_dir: static
+
+- url: /stats.*
+  script: $PYTHON_LIB/google/appengine/ext/appstats/ui.py
 
 - url: /admin/.*
   script: $PYTHON_LIB/google/appengine/ext/admin
   login: admin
 
+- url: /test/.*
+  script: test_ui_handler.py
+  login: required
+  
 - url: .*
   script: main_ui_handler.py

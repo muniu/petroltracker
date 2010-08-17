@@ -30,7 +30,10 @@ except ImportError:
 try:
     import json as simplejson
 except ImportError:
-    import simplejson
+    try:
+        import simplejson
+    except ImportError:
+        from django.utils import simplejson
 
 class Geocoder(object):
     """Base class for all geocoders."""

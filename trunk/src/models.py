@@ -58,7 +58,7 @@ class Message(db.Model):
     user                = db.ReferenceProperty(reference_class=User, collection_name="messages")     ## a reference to the user this message involved (either as a sender or as a recipient)
 #    direction           = db.BooleanProperty(required=True, default=INCOMING_MSG)  ## whether this message was sent or received by the system
     status              = db.StringProperty(required=True, default=INCOMING_MSG)    ## whether this message was sent or received by the system (if sent, whether it has been actually sent or is still "dirty", i.e. to be sent but not yet sent)
-    twitter_created_at  = db.DateTimeProperty()                                     ## the date of this message creation as provided by twitter
+#    twitter_created_at  = db.DateTimeProperty()                                     ## the date of this message creation as provided by twitter
     created_at          = db.DateTimeProperty(required=True, auto_now_add=True)     ## the date of this message object creation in the datastore
 ##class Message()
 
