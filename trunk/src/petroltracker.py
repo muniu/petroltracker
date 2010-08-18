@@ -27,7 +27,7 @@ from geo import geotypes
 from models import PetrolStation
 
 
-MAX_RESULTS = 1         ## the max. number of results to return
+MAX_RESULTS = 10         ## the max. number of results to return
 MAX_DISTANCE = 15        ## in km, the max. distance that a location-result can be in
 
 
@@ -42,12 +42,13 @@ class PetrolTracker():
     def __init__(self):
         '''
         '''        
-        self.google_geocoder = geocoders.Google(domain='maps.google.co.ke', resource='maps', format_string="%s, Nairobi Kenya")         
+#        self.google_geocoder = geocoders.Google(domain='maps.google.co.ke', resource='maps', format_string="%s, Nairobi Kenya")         
+        self.google_geocoder = geocoders.Google(domain='maps.google.co.ke', resource='maps/geo', format_string="%s, Nairobi Kenya")         
     ##__init__()
 
     
     
-    def geocode(self, location_string=None, exactly_one=True):
+    def geocode(self, location_string=None, exactly_one=False):
         '''
         Return "placename, (lat, lon)" of the location string, else return None if not found
         '''

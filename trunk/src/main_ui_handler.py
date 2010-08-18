@@ -82,7 +82,8 @@ class HandleRequests(webapp.RequestHandler):
                 station_name = station.canonical_name
                 
                 params = {
-                    'q': "%s,%s (petrol station closest to %s)" % (lat, lon, place),
+#                    'q': "%s,%s (petrol station closest to %s)" % (lat, lon, place),
+                    'q': "%s,%s" % (lat, lon),
                     }
                 
                 google_maps_link = "http://maps.google.com/maps?" + urllib.urlencode(params)
