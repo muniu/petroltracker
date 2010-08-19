@@ -56,9 +56,9 @@ class PetrolTracker():
              
         ## potentially more than one place will match... catch the ValueError exception if we asked for only one
         try:
-            places = self.google_geocoder.geocode(location_string)
+            places = self.google_geocoder.geocode(location_string, exactly_one=False)
 #            places = self.google_geocoder.geocode(location_string, exactly_one=exactly_one)
-            place, (lat, lon) = places
+#            place, (lat, lon) = places
             
         ## > 1 results available for given location name
         except ValueError, e:
@@ -71,7 +71,8 @@ class PetrolTracker():
             return NO_RESULTS
         ##try-except
 
-        return place, (lat,lon)
+#        return place, (lat,lon)
+        return places
     ##geocode()
 
     
