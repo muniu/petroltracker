@@ -45,57 +45,92 @@ class HandleRequests(webapp.RequestHandler):
     def get(self):
         '''
         '''
-        place = self.request.get("place", None)
+        place_to_geocode = self.request.get("place", None)
 
         ## if not an accepted query field...
-        if not place:
+        if not place_to_geocode:
             self.response.out.write("Please provide a location name in a query field named 'place'.\n")
             return
         ##if
 
         ## geocode the location name given        
-        geoinfo = self.petroltracker.geocode(place)
+        geoinfo = self.petroltracker.geocode(place_to_geocode)
         logging.debug("Return value from google_geocoder.geocode() 'geoinfo' = '%s'" % str(geoinfo))
+        ##if
         
-        ## if too many results returned...
-        if geoinfo == petroltracker.TOO_MANY_RESULTS:
-            self.response.out.write(geoinfo + "\n")
-            return
-        
-        ## if no results returned...
-        elif geoinfo == petroltracker.NO_RESULTS:
-            self.response.out.write(geoinfo + "\n")
-            return
-        ##if-else
-        
-        ## If all seems ok...
-        place, (lat, lon) = geoinfo
+#        ## if too many results returned...
+#        if geoinfo == petroltracker.TOO_MANY_RESULTS:
+#            self.response.out.write(geoinfo + "\n")
+#            return
+#        
+#        ## if no results returned...
+#        elif geoinfo == petroltracker.NO_RESULTS:
+#            self.response.out.write(geoinfo + "\n")
+#            return
+#        ##if-else
 
-        ## perform a proximity search on the geocoded location
-        stations = self.petroltracker.proximity_search(lat, lon)
-        logging.debug("Return value from PetrolStation.proximity_fetch() 'stations' = '%s'" % str(stations))
-        
-#        if type(stations) == list:        ## TODO: seems reduntant, can there ever be a different return type?
-        if len(stations) > 0:
-            for station in stations:
-                logging.debug("Station close to place:'%s' --> station:'%s'" % (place, station.canonical_name))
-                station_name = station.canonical_name
-                
-                params = {
-#                    'q': "%s,%s (petrol station closest to %s)" % (lat, lon, place),
-                    'q': "%s,%s" % (lat, lon),
-                    }
-                
-                google_maps_link = "http://maps.google.com/maps?" + urllib.urlencode(params)
+        ## memoize to reduce repeated calls to proximity_search with the same arguments
+        memoized_places = {}
 
-#                self.response.out.write("%s (lat, lon = %s, %s) is the closest petrol station to '%s'\n\n<p />" % (station_name, station.location.lat, station.location.lon, place))
-                self.response.out.write("<br /><br /><a href='%s'>%s</a> is the closest petrol station to '%s'\n\n<p />" % (google_maps_link, station_name, place))
-#                self.response.out.write("<a href='%s'>Map this location</a>" % google_maps_link)
-                return
-            ##for
-        else:
-            self.response.out.write("No petrol stations found near %s\n" % place)
-        ##if-else
+        self.response.out.write("<li>Locations in <b>bold</b> are the places the system thinks you asked for (listed from highest-confidence to lowest-confidence).<br />")
+        self.response.out.write("<li>The top <b>%s</b> stations in a radius of <b>%skm</b> closest to the location are listed (from nearest to farthest).<br /><hr />" \
+                                        % (petroltracker.MAX_RESULTS, petroltracker.MAX_DISTANCE))
+
+        for places in geoinfo:
+            ## If all seems ok...
+#            logging.debug("places : '%s'" % str(geoinfo))
+            place, (lat, lon) = places
+            place = place.strip()
+            
+            ## FIXME: a hack to trap a spurious response that always returns the following even for spurious searches like 'abracadabra' (!!)
+            ## 'Nairobi National Park, Nairobi, Kenya'
+            ## 'Nairobi, Kenya'
+            if (place == 'Nairobi, Kenya') or (place == 'Nairobi National Park, Nairobi, Kenya'):
+                logging.warn("Bullshit geocoding reesults '%s' for '%s'" % (str(places), place_to_geocode))
+                self.response.out.write("<li>Sorry, no petrol stations were found near <b>%s</b>. If you believe this is in error,\
+                                 please let us know at <a href='mailto:saidimu@gmail.com?subject=PetrolTracker missing station&body=My search for **%s** did not return any results'>saidimu@gmail.com</a>\
+                                  OR at <a target ='_blank' href='http://code.google.com/p/petroltracker/'>http://code.google.com/p/petroltracker/</a>" % (place_to_geocode, place_to_geocode))
+                logging.critical("No petrol stations found near '%s'" % place_to_geocode)
+                continue
+            ##if-else
+            
+            self.response.out.write("<p />Petrol Stations closest to <b>%s:</b>" % place)
+
+            ## only call proximity_fetch() if this (lat, lon) hasn't been seen before    
+            if (lat, lon) in memoized_places:
+                stations = memoized_places[(lat, lon)]
+                logging.debug("(memoized) Return value for '%s' from PetrolStation.proximity_fetch() 'stations' = '%s'" % (place, str(stations)))
+            else:
+                ## perform a proximity search on the geocoded location
+                stations = self.petroltracker.proximity_search(lat, lon)
+                logging.debug("Return value for '%s' from PetrolStation.proximity_fetch() 'stations' = '%s'" % (place, str(stations)))
+            ##if
+            
+            if len(stations) > 0:
+                for station in stations:
+                    logging.debug("Station close to '%s' --> '%s'" % (place, station.canonical_name))
+                    station_name = station.canonical_name
+                    station_lat = station.location.lat
+                    station_lon = station.location.lon
+                    
+                    params = {
+                        'q': "%s,%s" % (station_lat, station_lon),
+                        }
+                    
+                    station_maps_link = "http://maps.google.com/maps?" + urllib.urlencode(params)
+    
+#                    self.response.out.write("<br /><a href='%s'>%s</a> is the closest petrol station to '%s'" % (google_maps_link, station_name, place))
+                    self.response.out.write("<li><a href='%s' target='_blank'>%s</a>" % (station_maps_link, station_name))
+                ##for
+            else:
+                self.response.out.write("<li>Sorry, no petrol stations were found near <b>%s</b>. If you believe this is in error,\
+                                 please let us know at <a href='mailto:saidimu@gmail.com?subject=PetrolTracker missing station&body=My search for **%s** did not return any results'>saidimu@gmail.com</a>\
+                                  OR at <a target ='_blank' href='http://code.google.com/p/petroltracker/'>http://code.google.com/p/petroltracker/</a>" % (place_to_geocode, place_to_geocode))
+                logging.critical("No petrol stations found near '%s'" % str(places))
+            ##if-else
+            
+            self.response.out.write("<br /><hr />")
+        ##for
         
     ##get()
     

@@ -16,7 +16,7 @@
 #
 
 application: petroltracker
-version: 1-test-petrol-discuss
+version: 1-test3-petrol-discussion-group
 runtime: python
 api_version: 1
 
