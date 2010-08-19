@@ -27,8 +27,8 @@ from geo import geotypes
 from models import PetrolStation
 
 
-MAX_RESULTS = 10         ## the max. number of results to return
-MAX_DISTANCE = 15        ## in km, the max. distance that a location-result can be in
+MAX_RESULTS = 5         ## the max. number of results to return
+MAX_DISTANCE = 5        ## in km, the max. distance that a location-result can be in
 
 
 TOO_MANY_RESULTS = "More than 1 place was found to match the name you entered. Please provide additional details."
@@ -43,7 +43,7 @@ class PetrolTracker():
         '''
         '''        
 #        self.google_geocoder = geocoders.Google(domain='maps.google.co.ke', resource='maps', format_string="%s, Nairobi Kenya")         
-        self.google_geocoder = geocoders.Google(domain='maps.google.co.ke', resource='maps/geo', format_string="%s, Nairobi Kenya")         
+        self.google_geocoder = geocoders.Google(domain='maps.google.co.ke', format_string="%s, Nairobi Kenya")         
     ##__init__()
 
     
@@ -56,7 +56,8 @@ class PetrolTracker():
              
         ## potentially more than one place will match... catch the ValueError exception if we asked for only one
         try:
-            places = self.google_geocoder.geocode(location_string, exactly_one=exactly_one)
+            places = self.google_geocoder.geocode(location_string)
+#            places = self.google_geocoder.geocode(location_string, exactly_one=exactly_one)
             place, (lat, lon) = places
             
         ## > 1 results available for given location name
