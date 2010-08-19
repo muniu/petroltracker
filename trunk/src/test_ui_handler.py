@@ -68,7 +68,7 @@ def main():
     application = webapp.WSGIApplication([
                                 ('/test/.*', HandleRequests),
                             ],
-                            debug=True)
+                            debug=False)
     
     wsgiref.handlers.CGIHandler().run(application)
 
