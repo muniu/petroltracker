@@ -27,6 +27,7 @@ import urllib
 import petroltracker
 
 import wsgiref.handlers
+from google.appengine.api import users
 from google.appengine.ext import webapp
 
 class HandleRequests(webapp.RequestHandler):
@@ -55,7 +56,13 @@ class HandleRequests(webapp.RequestHandler):
 
         ## geocode the location name given        
         geoinfo = self.petroltracker.geocode(place_to_geocode)
-        logging.debug("Return value from google_geocoder.geocode() 'geoinfo' = '%s'" % str(geoinfo))
+#        logging.debug("Return value from google_geocoder.geocode() 'geoinfo' = '%s'" % str(geoinfo))
+
+        ## if Google Maps complaining about too many queries...
+        if geoinfo == petroltracker.GOOGLE_TOO_MANY_QUERIES_ERROR:
+            logging.error("geopy.geocoders.google.GTooManyQueriesError: The given key has gone over the requests limit in the 24 hour period or has submitted too many requests in too short a period of time.")
+            self.response.out.write(geoinfo + "\n")
+            return
         ##if
         
 #        ## if too many results returned...
@@ -77,16 +84,24 @@ class HandleRequests(webapp.RequestHandler):
                                         % (petroltracker.MAX_RESULTS, petroltracker.MAX_DISTANCE))
 
         for places in geoinfo:
-            ## If all seems ok...
-#            logging.debug("places : '%s'" % str(geoinfo))
             place, (lat, lon) = places
             place = place.strip()
+
+            ## grab the current user info        
+            user = users.get_current_user()
+            
+            ## if the user is logged-in...
+            if user:
+                nickname = user.nickname()
+                email = user.email()
+                logging.info("%s -- BY -- %s (%s)" % (str(place_to_geocode), str(email), str(nickname)))
+            ##if
             
             ## FIXME: a hack to trap a spurious response that always returns the following even for spurious searches like 'abracadabra' (!!)
             ## 'Nairobi National Park, Nairobi, Kenya'
             ## 'Nairobi, Kenya'
             if (place == 'Nairobi, Kenya') or (place == 'Nairobi National Park, Nairobi, Kenya'):
-                logging.warn("Bullshit geocoding reesults '%s' for '%s'" % (str(places), place_to_geocode))
+                logging.warn("Bullshit geocoding results '%s' for '%s'" % (str(places), place_to_geocode))
                 self.response.out.write("<li>Sorry, no petrol stations were found near <b>%s</b>. If you believe this is in error,\
                                  please let us know at <a href='mailto:saidimu@gmail.com?subject=PetrolTracker missing station&body=My search for **%s** did not return any results'>saidimu@gmail.com</a>\
                                   OR at <a target ='_blank' href='http://code.google.com/p/petroltracker/'>http://code.google.com/p/petroltracker/</a>" % (place_to_geocode, place_to_geocode))

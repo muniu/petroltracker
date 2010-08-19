@@ -20,7 +20,7 @@ __author__ = "saidimu@gmail.com (Saidimu Apale)"
 
 #import sys
 #sys.path.insert(0, 'geopy.zip')
-import logging
+import time
 from geopy import geocoders
 from geo import geotypes
 
@@ -33,6 +33,7 @@ MAX_DISTANCE = 5        ## in km, the max. distance that a location-result can b
 
 TOO_MANY_RESULTS = "More than 1 place was found to match the name you entered. Please provide additional details."
 NO_RESULTS = "No places matched your request. Please provide additional details."
+GOOGLE_TOO_MANY_QUERIES_ERROR = "The system is overloaded, please try again in a short moment."
 
 class PetrolTracker():
     '''
@@ -59,6 +60,11 @@ class PetrolTracker():
             places = self.google_geocoder.geocode(location_string, exactly_one=False)
 #            places = self.google_geocoder.geocode(location_string, exactly_one=exactly_one)
 #            place, (lat, lon) = places
+
+        ## FIXME: the geocoder complaining of too many queries (??)
+        ## sleep for some time and then retry
+        except geocoders.google.GTooManyQueriesError, e:
+            return GOOGLE_TOO_MANY_QUERIES_ERROR
             
         ## > 1 results available for given location name
         except ValueError, e:
